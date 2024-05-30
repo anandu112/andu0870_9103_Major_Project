@@ -105,8 +105,8 @@ let drum;
 
 // Load sound file before setup() function runs
 function preload() {
-  song = loadSound("assets/723287__migfus20__relaxing-jazz-music-loop.mp3");
-  drum = loadSound("assets/4829__zajo__drum03.wav");
+  song = loadSound("audio/723287__migfus20__relaxing-jazz-music-loop.mp3");
+  drum = loadSound("audio/4829__zajo__drum03.wav");
 }
 
 function setup() {
