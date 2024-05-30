@@ -108,11 +108,11 @@ function draw() {
   // Get audio spectrum data
   if (song.isPlaying()) {
     let spectrum = fft.analyze();
-    let offset = map(spectrum[0], 0, 255, -50, 50); // Map spectrum values to movement range
-
-    // If the song is playing, move and display all cars based on the FFT offset
-    for (let car of cars) {
-      car.display(offset);
+    for (let i = 0; i < cars.length; i++) {
+      // Calculate a separate offset for each car by mapping the spectrum values to the movement range
+      let offset = map(spectrum[i], 0, 255, -150, 150);
+      // Move and display each car based on the FFT offset
+      cars[i].display(offset);
     }
   } else {
     // If the song is not playing, display all cars in their initial positions
