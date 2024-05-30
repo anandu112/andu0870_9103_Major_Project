@@ -106,7 +106,7 @@ let drum;
 // Load sound file before setup() function runs
 function preload() {
   song = loadSound("audio/723287__migfus20__relaxing-jazz-music-loop.mp3");
-  drum = loadSound("audio/4829__zajo__drum03.wav");
+  drum = loadSound("audio/100185__menegass__rick_drum_bd_soft.mp3");
 }
 
 function setup() {
