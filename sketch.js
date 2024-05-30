@@ -101,10 +101,12 @@ let fft; // Make a variate to hold the FFT object
 let numBins = 128; //  Make a variate for the number of bins in the FFT object
 let smoothing = 0.8; // Make a variable for the smoothing of the FFT
 let button; // Button to control play/pause functionality
+let drum;
 
 // Load sound file before setup() function runs
 function preload() {
   song = loadSound("assets/723287__migfus20__relaxing-jazz-music-loop.mp3");
+  drum = loadSound("assets/4829__zajo__drum03.wav");
 }
 
 function setup() {
@@ -120,7 +122,7 @@ function setup() {
 
   // Create play/pause button
   button = createButton("Play/Pause");
-  button.position((width - button.width) / 2, height - button.height - 2);
+  button.position((width - button.width) / 2 + 60, height - button.height - 10);
   button.mousePressed(play_pause);
 }
 
@@ -172,12 +174,26 @@ function draw() {
   }
 }
 
+function mousePressed() {
+  // Check if a light was clicked when the mouse is pressed
+  for (let light of lights) {
+    let rect = light.rectangle;
+    // Check if the mouse's X and Y coordinates are within the current light's rectangle area
+    if (mouseX >= rect.x && mouseX <= rect.x + rect.width && mouseY >= rect.baseY && mouseY <= rect.baseY + rect.height) {
+      if (!drum.isPlaying()) {
+        drum.play();
+      }
+      break;
+    }
+  }
+}
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   createCars();
   createYellowBlocks();
   createLights();
-  button.position((width - button.width) / 2, height - button.height - 2);
+  button.position((width - button.width) / 2 + 60, height - button.height - 10);
 }
 
 function createYellowBlocks() {
