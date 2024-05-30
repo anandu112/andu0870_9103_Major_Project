@@ -5,7 +5,18 @@ class Rectangle {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.originalColor = color(r, g, b); // Store the initial color
+    this.color = this.originalColor; // Current color of the rectangle
+  }
+
+  // Set the color of the rectangle
+  setColor(r, g, b) {
     this.color = color(r, g, b);
+  }
+
+  // Reset the color to the original color
+  resetColor() {
+    this.color = this.originalColor;
   }
 
   display(offset = 0) {
@@ -63,6 +74,17 @@ class SmallBlock {
   }
 }
 
+class Light {
+  constructor(rectangle) {
+    this.rectangle = rectangle;
+  }
+
+  // Display the light
+  display() {
+    this.rectangle.display();
+  }
+}
+
 const SMALL_BLOCK_SIZE = 12;
 const SMALL_BLOCK_COLORS = [
   '#385799', // blue
@@ -114,10 +136,23 @@ function draw() {
       // Move and display each car based on the FFT offset
       cars[i].display(offset);
     }
+
+    // Change the color of the lights based on the spectrum data
+    for (let i = 0; i < lights.length; i++) {
+      let r = 255;
+      let g = map(spectrum[i], 0, 255, 255, 50);
+      let b = 0;
+      lights[i].rectangle.setColor(r, g, b);
+    }
   } else {
     // If the song is not playing, display all cars in their initial positions
     for (let car of cars) {
       car.display(0); // Display each car without any offset
+    }
+
+    // Reset the color of all lights
+    for (let light of lights) {
+      light.rectangle.resetColor();
     }
   }
 
@@ -292,40 +327,29 @@ function createCars() {
 function createLights() {
   lights = [];
   let scaleFactor = min(windowWidth / 715, windowHeight / 715);
-  //blue lights
-  let rect1 = new Rectangle(55 * scaleFactor, 480 * scaleFactor, 40 * scaleFactor, 40 * scaleFactor, 66, 103, 185);
-  let rect2 = new Rectangle(54 * scaleFactor, 140 * scaleFactor, 40 * scaleFactor, 40 * scaleFactor, 66, 103, 185);
-  let rect3 = new Rectangle(655 * scaleFactor, 80 * scaleFactor, 36 * scaleFactor, 25 * scaleFactor, 66, 103, 185);
-  let rect4 = new Rectangle(630 * scaleFactor, 480 * scaleFactor, 38 * scaleFactor, 42 * scaleFactor, 66, 103, 185);
-  //red lights
-  let rect5 = new Rectangle(640 * scaleFactor, 140 * scaleFactor, 40 * scaleFactor, 40 * scaleFactor, 177, 61, 48);
-  let rect6 = new Rectangle(630 * scaleFactor, 550 * scaleFactor, 38 * scaleFactor, 30 * scaleFactor, 177, 61, 48);
-  let rect7 = new Rectangle(330 * scaleFactor, 675 * scaleFactor, 40 * scaleFactor, 40 * scaleFactor, 177, 61, 48);
-  let rect8 = new Rectangle(95 * scaleFactor, 360 * scaleFactor, 60 * scaleFactor, 45 * scaleFactor, 177, 61, 48);
-  let rect9 = new Rectangle(108 * scaleFactor, 30 * scaleFactor, 35 * scaleFactor, 85 * scaleFactor, 177, 61, 48);
-  let rect10 = new Rectangle(650 * scaleFactor, 350 * scaleFactor, 20 * scaleFactor, 36 * scaleFactor, 177, 61, 48);
-  //grey lights
-  let rect11 = new Rectangle(110 * scaleFactor, 200* scaleFactor, 30 * scaleFactor, 20 * scaleFactor, 216, 216, 212);
-  let rect12 = new Rectangle(115 * scaleFactor, 275* scaleFactor, 20 * scaleFactor, 20 * scaleFactor, 216, 216, 212);
-  let rect13 = new Rectangle(290 * scaleFactor, 310* scaleFactor, 50 * scaleFactor, 15 * scaleFactor, 216, 216, 212);
-  let rect14 = new Rectangle(108 * scaleFactor, 70* scaleFactor, 35 * scaleFactor, 15 * scaleFactor, 216, 216, 212);
-  let rect15 = new Rectangle(120 * scaleFactor, 570* scaleFactor, 20 * scaleFactor, 20 * scaleFactor, 216, 216, 212);
 
-  lights.push(rect1);
-  lights.push(rect2);
-  lights.push(rect3);
-  lights.push(rect4);
-  lights.push(rect5);
-  lights.push(rect6);
-  lights.push(rect7);
-  lights.push(rect8);
-  lights.push(rect9);
-  lights.push(rect10);
-  lights.push(rect11);
-  lights.push(rect12);
-  lights.push(rect13);
-  lights.push(rect14);
-  lights.push(rect15);
+  let lightData = [
+    { x: 55, y: 480, w: 40, h: 40, r: 66, g: 103, b: 185 },
+    { x: 54, y: 140, w: 40, h: 40, r: 66, g: 103, b: 185 },
+    { x: 655, y: 80, w: 36, h: 25, r: 66, g: 103, b: 185 },
+    { x: 630, y: 480, w: 38, h: 42, r: 66, g: 103, b: 185 },
+    { x: 640, y: 140, w: 40, h: 40, r: 177, g: 61, b: 48 },
+    { x: 630, y: 550, w: 38, h: 30, r: 177, g: 61, b: 48 },
+    { x: 330, y: 675, w: 40, h: 40, r: 177, g: 61, b: 48 },
+    { x: 95, y: 360, w: 60, h: 45, r: 177, g: 61, b: 48 },
+    { x: 108, y: 30, w: 35, h: 85, r: 177, g: 61, b: 48 },
+    { x: 650, y: 350, w: 20, h: 36, r: 177, g: 61, b: 48 },
+    { x: 110, y: 200, w: 30, h: 20, r: 216, g: 216, b: 212 },
+    { x: 115, y: 275, w: 20, h: 20, r: 216, g: 216, b: 212 },
+    { x: 290, y: 310, w: 50, h: 15, r: 216, g: 216, b: 212 },
+    { x: 108, y: 70, w: 35, h: 15, r: 216, g: 216, b: 212 },
+    { x: 120, y: 570, w: 20, h: 20, r: 216, g: 216, b: 212 }
+  ];
+
+  for (let lightRect of lightData) {
+    let rect = new Rectangle(lightRect.x * scaleFactor, lightRect.y * scaleFactor, lightRect.w * scaleFactor, lightRect.h * scaleFactor, lightRect.r, lightRect.g, lightRect.b);
+    lights.push(new Light(rect));
+  }
 }
 
 // Function to switch play/pause for the song
